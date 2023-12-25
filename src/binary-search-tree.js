@@ -9,22 +9,22 @@ const { Node } = require("../extensions/list-tree.js");
 
 class BinarySearchTree {
   constructor() {
-    this.root = null;
+    this.rootNode = null; // Changed here
   }
 
   add(data) {
-    const node = new Node(data);
-    this.root ? this.insert(this.root, node) : (this.root = node);
+    const newNode = new Node(data);
+    this.rootNode
+      ? this.insert(this.rootNode, newNode)
+      : (this.rootNode = newNode); // Changed here
   }
 
   insert(node, newNode) {
-    newNode.data < node.data
-      ? node.left
-        ? this.insert(node.left, newNode)
-        : (node.left = newNode)
-      : node.right
-      ? this.insert(node.right, newNode)
-      : (node.right = newNode);
+    if (newNode.data < node.data) {
+      node.left ? this.insert(node.left, newNode) : (node.left = newNode);
+    } else {
+      node.right ? this.insert(node.right, newNode) : (node.right = newNode);
+    }
   }
 
   has(data) {
@@ -32,15 +32,16 @@ class BinarySearchTree {
   }
 
   find(data) {
-    let current = this.root;
-    while (current && data !== current.data) {
-      current = data < current.data ? current.left : current.right;
+    let currentNode = this.rootNode; // Changed here
+    while (currentNode && data !== currentNode.data) {
+      currentNode =
+        data < currentNode.data ? currentNode.left : currentNode.right;
     }
-    return current;
+    return currentNode;
   }
 
   remove(data) {
-    this.root = this.removeNode(this.root, data);
+    this.rootNode = this.removeNode(this.rootNode, data); // Changed here
   }
 
   removeNode(node, key) {
@@ -55,9 +56,9 @@ class BinarySearchTree {
       if (!node.left && !node.right) return null;
       if (!node.left) return node.right;
       if (!node.right) return node.left;
-      let aux = this.findMinNode(node.right);
-      node.data = aux.data;
-      node.right = this.removeNode(node.right, aux.data);
+      let successor = this.findMinNode(node.right);
+      node.data = successor.data;
+      node.right = this.removeNode(node.right, successor.data);
       return node;
     }
   }
@@ -67,14 +68,18 @@ class BinarySearchTree {
   }
 
   min() {
-    return this.root ? this.findMinNode(this.root).data : null;
+    return this.rootNode ? this.findMinNode(this.rootNode).data : null; // Changed here
   }
 
   max() {
-    if (!this.root) return null;
-    let node = this.root;
+    if (!this.rootNode) return null; // Changed here
+    let node = this.rootNode; // Changed here
     while (node.right) node = node.right;
     return node.data;
+  }
+
+  root() {
+    return this.rootNode;
   }
 }
 
